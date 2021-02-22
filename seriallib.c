@@ -2,12 +2,12 @@
 
 struct termios tty;
 
-int serial_open(const char* port, unsigned int baud,
+int serial_open(const char* portdesc, unsigned int baud,
 		int parity, int stopbits, int bytesize, int vmin, int vtime)
 {
-	int serialport = open(port, O_RDWR);
+	int serialport = open(portdesc, O_RDWR);
     if (serialport < 0) {
-        printf("Error %i : %s from open: %s\n", errno, port, strerror(errno));
+        printf("Error %i : %s from open: %s\n", errno, portdesc, strerror(errno));
 		return -1;
     }
     if (tcgetattr(serialport, &tty) != 0) {
@@ -102,21 +102,27 @@ int serial_open(const char* port, unsigned int baud,
 	return serialport;
 }
 
-int serial_write(int* serialport, unsigned char* data, size_t len)
+int serial_write(int* portdesc, unsigned char* data, size_t len)
 {
-	return write(*serialport, data, len);
+	return write(*portdesc, data, len);
 }
 
-int serial_read(int* serialport, unsigned char* data, size_t len)
+int serial_read(int* portdesc, unsigned char* data, size_t len)
 {
 	unsigned char buffer[len];
 	memset(&buffer, '\0', len);
-	int bytesize = read(*serialport, buffer, len);
-	memmove(data, buffer, len);
+	int bytesize = read(*portdesc, buffer, len);
+	memcpy(data, buffer, len);
 	return bytesize;
 }
 
-void serial_close(int* serialport)
+void serial_flush(int* portdesc)
 {
-	close(*serialport);
+	sleep(2);
+	tcflush(*portdesc, TCIOFLUSH);
+}
+
+void serial_close(int* portdesc)
+{
+	close(*portdesc);
 }
