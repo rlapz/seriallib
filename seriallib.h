@@ -1,3 +1,9 @@
+/* MIT License
+ *
+ * Copyright (c) 2021 Arthur Lapz (rLapz)
+ *
+ * See LICENSE file for license details
+ */
 #ifndef SERIALLIB_H
 #define SERIALLIB_H
 
