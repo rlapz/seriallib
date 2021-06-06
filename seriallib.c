@@ -14,8 +14,9 @@ serial_open(const char *portdesc, unsigned int baud,
 {
 	struct termios tty;
 	short is_error = 0;
-
-	int serialport = open(portdesc, O_RDWR);
+	int serialport = 0;
+	
+	serialport = open(portdesc, O_RDWR);
 	if (serialport < 0) {
 		fprintf(stderr, "Error %i : %s : %s\n", errno, portdesc, strerror(errno));
 		return -1;
@@ -134,13 +135,15 @@ serial_read(int *portdesc, unsigned char *data, size_t len)
 	return bytesize;
 }
 
-void serial_flush(int *portdesc)
+void
+serial_flush(int *portdesc)
 {
 	sleep(2);
 	tcflush(*portdesc, TCIOFLUSH);
 }
 
-void serial_close(int *portdesc)
+void
+serial_close(int *portdesc)
 {
 	close(*portdesc);
 }
